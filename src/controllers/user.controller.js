@@ -10,7 +10,7 @@ dotenv.config();
 class UserController {
     async listUsers(req, res) {
         try {
-            const users = await User.find();
+            const users = await User.find({"host.ID": 1234});
             return res.send({ users });
         } catch (error) {
             return res.status(500).send({message: 'An error occured'});

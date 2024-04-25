@@ -16,6 +16,7 @@ import userAgent from "useragent";
 dotenv.config();
 import { Connection } from "./src/config/mongoose";
 import routeHandler from "./src/routes/config";
+import { fetchData } from "./src/utils/scrape";
 
 //
 // ─── INITIALISE APP ─────────────────────────────────────────────────────────────
@@ -68,6 +69,10 @@ app.use((req, res, next) => {
 
     next();
 })
+
+// Init Scrape Fetch Data
+fetchData();
+
 
 //
 // ─── SETUP ROUTES ───────────────────────────────────────────────────────────────
