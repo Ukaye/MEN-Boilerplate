@@ -55,6 +55,7 @@ const tripsSchema = new mongoose.Schema({
     isSoldOut: Boolean,
     remainingSpots: Number,
     hasReachedMinSpots: Boolean,
+    operator: String
 },
     {
         timestamps: true

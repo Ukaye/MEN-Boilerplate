@@ -34,8 +34,9 @@ export const fetchData = async () => {
 
         const tripDetail = await getTrova(`/trip-page-details${trip.tripPath}`);
         if (!tripDetail || !tripDetail.data) return;
-        trip = tripDetail.data;
+        trip = {...tripDetail.data, operator: trip.operator.name};
         
+        if (!trip._id) return console.log("INVALID TRIP", trip)
         await Trips.create(trip);
 
         // Check for previous host trips
@@ -60,8 +61,10 @@ export const fetchData = async () => {
 
                 const hostTripDetail = await getTrova(`/trip-page-details${hostTrip.tripPath}`);
                 if (!hostTripDetail || !hostTripDetail.data) return;
+                const hostTrip = {...hostTripDetail.data, operator: hostTrip.operator.name};
         
-                await Trips.create(hostTripDetail.data);
+                if (!hostTrip._id) return console.log("INVALID HOST TRIP", hostTrip)
+                await Trips.create(hostTrip);
             }));
         }));
     }));
