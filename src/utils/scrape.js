@@ -1,28 +1,31 @@
 import Trips from '../models/trips.model';
-import {post, get, put, del} from 'request-promise';
+import axios from 'axios';
 
-const getTrova = async (url) => await get(
-    `https://my.trovatrip.com/public${url}`,
-    {
-        json: true,
-        headers: {
-            'Content-Type': 'application/json',
-            'Origin': 'https://trovatrip.com',
-            'Accept': '*/*'
+const getTrova = async (url) => {
+    const response = await axios.get(
+        `https://my.trovatrip.com/public${url}`,
+        {
+            json: true,
+            headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'https://trovatrip.com',
+                'Accept': '*/*'
+            }
         }
-    }
-)
+    )
+    if (response && response.data)
+        return response.data
+    return false;
+}
 
 export const fetchData = async () => {
     console.log("[SYNC STARTED]:", new Date().toISOString())
-
     // Get all active trips
     const tripsArray = await getTrova('/trip-details');
-    console.log("tripsArray", tripsArray);
     if (!tripsArray || !tripsArray.data) return;
+    console.log(tripsArray.data.length, 'active trip(s) found!')
 
-    await Promise.all(tripsArray.data.slice(0, 1).map(async trip => {
-        console.log("trip", trip);
+    await Promise.all(tripsArray.data.map(async trip => {
         if (!trip || !trip.id || !trip.tripPath) return;
 
         // Check for duplicate trip
@@ -30,13 +33,12 @@ export const fetchData = async () => {
         if (duplicate) return;
 
         const tripDetail = await getTrova(`/trip-page-details${trip.tripPath}`);
-        console.log("tripDetail", tripDetail);
         if (!tripDetail || !tripDetail.data) return;
+        trip = tripDetail.data;
         
-        await Trips.create(tripDetail.data);
+        await Trips.create(trip);
 
         // Check for previous host trips
-        console.log("trip.hosts", trip.hosts)
         if (!trip.hosts) return;
 
         await Promise.all(trip.hosts.map(async host => {
@@ -56,7 +58,6 @@ export const fetchData = async () => {
                 const duplicate = await Trips.findOne({ tripPath: hostTrip.tripPath });
                 if (duplicate) return;
 
-                console.log("hostTrip.tripPath", hostTrip.tripPath)
                 const hostTripDetail = await getTrova(`/trip-page-details${hostTrip.tripPath}`);
                 if (!hostTripDetail || !hostTripDetail.data) return;
         
