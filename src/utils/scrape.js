@@ -61,7 +61,7 @@ export const fetchData = async () => {
 
                 const hostTripDetail = await getTrova(`/trip-page-details${hostTrip.tripPath}`);
                 if (!hostTripDetail || !hostTripDetail.data) return;
-                const hostTrip = {...hostTripDetail.data, operator: hostTrip.operator.name};
+                hostTrip = {...hostTripDetail.data, operator: hostTrip.operator.name};
         
                 if (!hostTrip._id) return console.log("INVALID HOST TRIP", hostTrip)
                 await Trips.create(hostTrip);
