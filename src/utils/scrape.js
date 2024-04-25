@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import Trips from '../models/trips.model';
 import axios from 'axios';
 
@@ -34,9 +35,9 @@ export const fetchData = async () => {
 
         const tripDetail = await getTrova(`/trip-page-details${trip.tripPath}`);
         if (!tripDetail || !tripDetail.data) return;
-        trip = {...tripDetail.data, operator: trip.operator.name};
+        trip = {...tripDetail.data, operator: trip.operator ? trip.operator.name : ''};
         
-        if (!trip._id) return console.log("INVALID TRIP", trip)
+        if (!trip._id) trip._id = ObjectId();
         await Trips.create(trip);
 
         // Check for previous host trips
@@ -61,9 +62,9 @@ export const fetchData = async () => {
 
                 const hostTripDetail = await getTrova(`/trip-page-details${hostTrip.tripPath}`);
                 if (!hostTripDetail || !hostTripDetail.data) return;
-                hostTrip = {...hostTripDetail.data, operator: hostTrip.operator.name};
+                hostTrip = {...hostTripDetail.data, operator: hostTrip.operator ? hostTrip.operator.name : ''};
         
-                if (!hostTrip._id) return console.log("INVALID HOST TRIP", hostTrip)
+                if (!hostTrip._id) hostTrip._id = ObjectId();
                 await Trips.create(hostTrip);
             }));
         }));
