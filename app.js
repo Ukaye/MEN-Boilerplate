@@ -71,7 +71,7 @@ app.use((req, res, next) => {
 })
 
 // Init Scrape Fetch Data
-fetchData();
+// fetchData();
 
 
 //
@@ -83,7 +83,6 @@ app.get('/', (req, res) => {
     let agent = userAgent.parse(req.headers['user-agent']).toString();
     console.log(agent);
     return res.send(agent);
-
 })
 //
 // ─── START APP ──────────────────────────────────────────────────────────────────

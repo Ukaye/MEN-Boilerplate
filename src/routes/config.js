@@ -5,6 +5,7 @@
  import express from "express";
  import swaggerUi from "swagger-ui-express";
  import userRouter from "./user.route";
+ import tripsRouter from "./trips.route";
 
  const Router = express.Router();
  const swaggerDocument = require("../../swagger.json");
@@ -22,6 +23,7 @@ Router.get('/api-docs', swaggerUi.setup(swaggerDocument, { explorer: true }));
  //
 
 Router.use('/users', userRouter);
+Router.use('/trips', tripsRouter);
 
 Router.get('/', (req, res) => {
     res.send({

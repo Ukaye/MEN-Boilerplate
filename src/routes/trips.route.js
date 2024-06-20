@@ -3,18 +3,20 @@
 //
 
 import express from "express";
-import UserController from "../controllers/user.controller";
+import TripsController from "../controllers/trips.controller";
 
-const { listUsers } = new UserController;
+const { getTrips, getHosts } = new TripsController;
 const Router = express.Router();
 
 Router.get('/', (req, res) => {
     res.send({
         status: 200,
-        message: 'Welcome to user service!'
+        message: 'Welcome to trips service!'
     })
 });
 
-Router.get('/listAllUsers', listUsers);
+Router.get('/get', getTrips);
+
+Router.get('/hosts/get', getHosts);
 
 module.exports = Router;
